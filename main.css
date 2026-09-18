@@ -1,0 +1,70 @@
+:root {
+  --ink: #1c1c1c;
+  --muted: #6b6b6b;
+  --rule: #dcdcdc;
+  --bg: #fdfcfa;
+}
+
+/* Deliberately minimal — this is a skeleton, not a design pass. */
+body {
+  max-width: 40em;
+  margin: 3em auto;
+  padding: 0 1.5em;
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--bg);
+}
+.site-header { margin-bottom: 2em; font-size: 0.9em; }
+.site-header a { color: var(--ink); text-decoration: none; }
+h1 { font-size: 1.4em; }
+h2 { font-size: 1.05em; margin-top: 2.5em; border-bottom: 1px solid var(--rule); padding-bottom: 0.3em; }
+
+
+/* ---------- Pattern 1: centred aligned equations, flush-right comments ----------
+   Every row shares ONE grid (via display:contents on the row wrapper), so
+   Grid measures the widest "lhs" and widest "rhs" across ALL rows before
+   laying anything out -- that's what keeps "=" lined up (not KaTeX).
+
+   Centring trick: column 1 is an empty MIRROR spacer, column 4 holds the
+   notes. Both are minmax(0,1fr), so Grid splits the leftover space between
+   them equally, whatever the note text is. Equal space on both sides of
+   the maths (columns 2+3) = the maths sits dead centre, and the notes
+   independently hug the right edge of the box. */
+.eq-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) max-content max-content minmax(0,1fr);
+  column-gap: 0.9em;
+  row-gap: 0.55em;
+  align-items: baseline;
+  margin: 1.6em 0;
+}
+.eq-row  { display: contents; }
+.eq-lhs  { grid-column: 2; text-align: right; }
+.eq-rhs  { grid-column: 3; text-align: left; }
+.eq-note { grid-column: 4; text-align: right; color: var(--muted); font-size: 0.82em; }
+
+
+/* ---------- Pattern 2: a margin note (Tufte-ish sidenote) ----------
+   On wide screens it sits in the margin; on narrow screens it drops
+   inline so nothing gets clipped on mobile. */
+.with-note { position: relative; }
+.sidenote {
+  float: right;
+  clear: right;
+  width: 11em;
+  margin-right: -13.5em;
+  font-size: 0.8em;
+  line-height: 1.4;
+  color: var(--muted);
+}
+@media (max-width: 56em) {
+  .sidenote {
+    float: none;
+    width: auto;
+    margin: 0.3em 0 0.8em 0;
+    border-left: 2px solid var(--rule);
+    padding-left: 0.7em;
+  }
+}

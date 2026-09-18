@@ -1,0 +1,18 @@
+title: "Your Blog Title"
+description: "Deep dives on mathematical ideas."
+
+markdown: kramdown
+kramdown:
+  input: GFM          # GitHub-flavoured markdown (tables, fenced code, etc.)
+  syntax_highlighter: rouge
+
+permalink: /:year/:month/:day/:title/
+
+plugins:
+  - jekyll-feed
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - vendor

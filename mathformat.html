@@ -1,0 +1,25 @@
+{% comment %}
+  Usage, in a post:
+
+  {% include mathformat.html rows="x || = y + z || definition of x
+  || = a + b + z || substituting y" %}
+
+  One equation row per line. Each line is `lhs || rhs || note` —
+  leave a field blank (e.g. lhs on a continuation line) by just
+  putting nothing between the pipes.
+{% endcomment %}
+{% assign _lines = include.rows | split: "
+" %}
+<div class="eq-grid" markdown="0">
+{% for _line in _lines %}
+  {% assign _line = _line | strip %}
+  {% if _line != "" %}
+    {% assign _parts = _line | split: "||" %}
+    <div class="eq-row">
+      <div class="eq-lhs">\({{ _parts[0] | strip }}\)</div>
+      <div class="eq-rhs">\({{ _parts[1] | strip }}\)</div>
+      <div class="eq-note">{{ _parts[2] | strip }}</div>
+    </div>
+  {% endif %}
+{% endfor %}
+</div>

@@ -55,6 +55,47 @@ title: "Your title"
 Your content here.
 ```
 
+## Writing equation blocks without typing HTML
+
+`_includes/mathformat.html` turns one line per equation row into the
+full `eq-grid` markup, at build time (no JavaScript):
+
+```liquid
+{% include mathformat.html rows="x || = y + z || definition of x
+|| = a + b + z || substituting y" %}
+```
+
+Each line is `lhs || rhs || note` — leave a field blank by putting
+nothing between its pipes (e.g. an empty `lhs` on a continuation
+line). See `_posts/2026-09-18-welcome.md` for it in use next to the
+hand-written version it replaces.
+
+Two things to know about it, both general Jekyll facts rather than
+anything specific to this include:
+
+- Liquid scans the *whole* raw file for `{%` and `{{`, regardless of
+  surrounding HTML. If a line of maths ever contains the literal
+  sequence `%}` (a stray `%` right before a `}`) or a double brace
+  like `{{`, it can break the build by confusing Liquid's tag
+  parsing. If that happens, wrap the offending text in
+  `{% raw %} ... {% endraw %}` — Jekyll's built-in way of saying
+  "don't process this bit."
+- If the multi-line `rows="..."` parameter ever proves flaky in
+  practice, the fallback is a small `_data/*.yml` file per equation
+  set instead — more ceremony, but immune to the point above since
+  YAML doesn't share Liquid's delimiter characters.
+
+## GitHub's own math preview (and why it won't show this)
+
+Editing a `.md` file directly on github.com has a "Preview" tab that
+renders `$...$` and `$$...$$` math live, via GitHub's own Markdown
+renderer (backed by MathJax). It's genuinely useful for plain inline
+maths in ordinary prose — but it never runs Jekyll or Liquid, so
+anything inside an HTML block, or behind `{% include mathformat.html
+... %}`, is invisible to it; GitHub just shows the raw, unprocessed
+text. For those, preview via `bundle exec jekyll serve` instead (see
+above), ideally with `--livereload` so the browser refreshes on save.
+
 ## The one gotcha to know before you hit it
 
 Kramdown (Jekyll's markdown processor) will try to parse ordinary
